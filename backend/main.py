@@ -94,3 +94,15 @@ def log_interaction(interaction: schemas.InteractionCreate, db: Session = Depend
     db.commit()
     db.refresh(db_interaction)
     return db_interaction
+
+@app.post("/clear-database/")
+def clear_database(db: Session = Depends(get_db)):
+    try:
+        db.query(models.Interaction).delete()
+        db.query(models.Ad).delete()
+        db.query(models.User).delete()
+        db.commit()
+        return {"message": "All data cleared successfully"}
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
