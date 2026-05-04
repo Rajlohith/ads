@@ -27,7 +27,7 @@ origins = [
 # --- ADD THIS BLOCK ---
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # In production, replace "*" with your frontend domain
+    allow_origins=origins, # In production, replace "*" with your frontend domain
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
