@@ -17,6 +17,13 @@ app = FastAPI(
     description="Backend for serving personalized ads and tracking A/B testing data."
 )
 
+# --- UPDATED CORS BLOCK ---
+# Only these origins will be allowed to talk to your API
+origins = [
+    "http://127.0.0.1:8081",  # Your local frontend server
+    "http://localhost:8081",  # Some browsers prefer 'localhost' over the IP
+]
+
 # --- ADD THIS BLOCK ---
 app.add_middleware(
     CORSMiddleware,
