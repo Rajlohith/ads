@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ad Recommender PWA</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <header>
+        <h1>My PWA App</h1>
+        <p>Logged in as: User #1 (Tech, Gaming)</p>
+    </header>
+
+    <main>
+        <section class="content-feed">
+            <p>Welcome to your feed! Here is an article...</p>
+            <br>
+            
+            <!-- This is where the personalized ad will be injected -->
+            <div id="ad-container" class="ad-card hidden">
+                <span class="ad-badge">Sponsored</span>
+                <h3 id="ad-title">Loading Ad...</h3>
+                <p id="ad-content"></p>
+                <button id="ad-action-btn">Learn More</button>
+            </div>
+
+            <br>
+            <button id="refresh-ad-btn" class="secondary-btn">↻ Load New Ad</button>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
