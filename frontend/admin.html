@@ -3,9 +3,26 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>ADWise Admin</title>
+<title>MABlytic Admin</title>
 <link rel="manifest" href="manifest.json"/>
 <meta name="theme-color" content="#0d1017"/>
+<style>
+#splash{position:fixed;inset:0;z-index:99999;background:#0d1017;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  transition:opacity .5s ease;}
+#splash.hide{opacity:0;pointer-events:none}
+.sp-icon{width:72px;height:72px;border-radius:20px;background:linear-gradient(135deg,#5b68ff,#a855f7);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:900;font-size:28px;color:#fff;margin-bottom:18px;
+  box-shadow:0 0 40px rgba(91,104,255,.4);animation:splashPulse 1.2s ease infinite alternate;}
+.sp-name{font-size:22px;font-weight:800;color:#e4e6f0;letter-spacing:-.5px}
+.sp-sub{font-size:12px;color:#6070a0;margin-top:6px}
+.sp-bar{width:120px;height:3px;background:#272d45;border-radius:3px;margin-top:24px;overflow:hidden}
+.sp-fill{height:100%;width:0;background:linear-gradient(90deg,#5b68ff,#a855f7);
+  border-radius:3px;animation:splashLoad 1.4s ease forwards;}
+@keyframes splashPulse{from{box-shadow:0 0 20px rgba(91,104,255,.3)}to{box-shadow:0 0 50px rgba(91,104,255,.6)}}
+@keyframes splashLoad{0%{width:0}60%{width:80%}100%{width:100%}}
+</style>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -209,12 +226,13 @@ select option{background:#1a1d2e}
 </style>
 </head>
 <body>
+<div id="splash"><div class="sp-icon">M</div><div class="sp-name">MABlytic</div><div class="sp-sub">Admin Dashboard</div><div class="sp-bar"><div class="sp-fill"></div></div></div>
 
 <!-- ═══ SIDEBAR ═════════════════════════════════════════════ -->
 <aside class="sidebar">
   <div class="logo">
-    <div class="logo-icon">AW</div>
-    <span class="logo-name">ADWise</span>
+    <div class="logo-icon">M</div>
+    <span class="logo-name">MABlytic</span>
   </div>
   <nav class="nav">
     <button class="nav-item active" data-page="home">
@@ -276,8 +294,8 @@ select option{background:#1a1d2e}
     <!-- ══ HOME ═══════════════════════════════════════════ -->
     <div class="page active" id="page-home">
       <div class="welcome-card mb-5">
-        <div class="aw-logo">AW</div>
-        <div class="welcome-title">Welcome to ADWise Admin</div>
+        <div class="aw-logo">M</div>
+        <div class="welcome-title">Welcome to MABlytic Admin</div>
         <div class="welcome-sub">
           Full dashboard for persona management, ad analytics, A/B testing, and interaction tracking.
         </div>
@@ -289,13 +307,6 @@ select option{background:#1a1d2e}
         <div class="stat-card"><div class="stat-icon" style="background:var(--green-soft)">🖱</div><div><div class="stat-value" id="h-clicks">—</div><div class="stat-label">Total Clicks</div></div></div>
         <div class="stat-card"><div class="stat-icon" style="background:var(--purple-soft)">🎯</div><div><div class="stat-value" id="h-ctr">—</div><div class="stat-label">Global CTR</div></div></div>
       </div>
-      <div class="section-title mb-4">Quick Actions</div>
-      <div class="actions-grid">
-        <div class="action-card" onclick="goto('analysis')"><div class="action-icon" style="background:var(--accent-soft)">📊</div><div class="action-title">Ad Analysis</div><div class="action-desc">CTR charts & A/B results</div></div>
-        <div class="action-card" onclick="goto('users')"><div class="action-icon" style="background:var(--green-soft)">👥</div><div class="action-title">User Management</div><div class="action-desc">Profiles & analytics</div></div>
-        <div class="action-card" onclick="goto('ads')"><div class="action-icon" style="background:var(--orange-soft)">📢</div><div class="action-title">Ad Management</div><div class="action-desc">Create & inspect ads</div></div>
-        <div class="action-card" onclick="goto('history')"><div class="action-icon" style="background:var(--purple-soft)">📜</div><div class="action-title">Interaction Log</div><div class="action-desc">Views & clicks feed</div></div>
-      </div>
     </div>
 
     <!-- ══ AD ANALYSIS ════════════════════════════════════ -->
@@ -306,11 +317,7 @@ select option{background:#1a1d2e}
         <div class="stat-card"><div class="stat-icon" style="background:var(--purple-soft)">🎯</div><div><div class="stat-value" id="an-ctr">—</div><div class="stat-label">Global CTR</div></div></div>
         <div class="stat-card"><div class="stat-icon" style="background:var(--orange-soft)">📢</div><div><div class="stat-value" id="an-ads">—</div><div class="stat-label">Ads</div></div></div>
       </div>
-      <div class="grid-2 mb-5">
-        <div class="card">
-          <div class="section-header"><span class="card-title" style="margin:0">CTR Chart — All Ads</span><button class="btn btn-ghost btn-sm" onclick="loadAnalysis()">↻</button></div>
-          <div class="chart-outer"><div class="chart-bars" id="an-chart"><div class="empty">No data yet</div></div></div>
-        </div>
+      <div class="mb-5">
         <div class="card">
           <div class="card-title">Serve Ad — Live Test</div>
           <div class="form-group"><label>User ID</label><input type="number" id="srv-uid" placeholder="e.g. 2" min="1"/></div>
@@ -332,6 +339,12 @@ select option{background:#1a1d2e}
           </div>
         </div>
       </div>
+      <div class="section-header mb-4"><span class="section-title">Click-Through Rate - All Ads</span></div>
+      <div class="card mb-5">
+        <div class="chart-outer">
+          <div class="chart-bars" id="an-chart"><div class="loading" style="width:100%">Loading...</div></div>
+        </div>
+      </div>
       <div class="section-header mb-4"><span class="section-title">Per-Ad Analytics (GET /admin/analytics)</span><button class="btn btn-ghost btn-sm" onclick="loadAnalytics()">↻</button></div>
       <div class="card" style="padding:0;overflow:hidden">
         <div class="tbl-wrap"><table>
@@ -347,11 +360,6 @@ select option{background:#1a1d2e}
         <div>
           <div class="section-header mb-4"><span class="section-title">All Registered Users</span><button class="btn btn-ghost btn-sm" onclick="loadUsers()">↻</button></div>
           <div class="card" style="padding:0;overflow:hidden"><div class="scroll-list" id="user-list"><div class="loading">Loading…</div></div></div>
-          <div class="card mt-4">
-            <div class="card-title">Create Persona (POST /admin/users)</div>
-            <div class="form-group"><label>Preferences (comma-separated)</label><input type="text" id="new-prefs" placeholder="tech, gaming"/></div>
-            <button class="btn btn-primary" onclick="createPersona()">+ Create</button>
-          </div>
           <div class="card mt-4">
             <div class="card-title">Lookup User (GET /users/{id})</div>
             <div class="form-group"><label>User ID</label><input type="number" id="lkp-uid" placeholder="1" min="1"/></div>
@@ -466,18 +474,6 @@ select option{background:#1a1d2e}
           <div style="font-size:12px;color:var(--muted);margin-bottom:14px">GET /users/ · GET /users/{id} · POST /users/ · DELETE /users/{id}</div>
           <button class="btn btn-ghost btn-sm mb-4" onclick="apiListUsers()">GET /users/ (all)</button>
           <div id="api-users-result" class="mt-3"></div>
-        </div>
-
-        <!-- Ads -->
-        <div class="card mb-4">
-          <div class="card-title">📢 Ad Endpoints</div>
-          <div style="font-size:12px;color:var(--muted);margin-bottom:14px">GET /ads/ · GET /ads/{id} · POST /ads/ · DELETE /ads/{id}</div>
-          <div class="flex-center gap-2">
-            <button class="btn btn-ghost btn-sm" onclick="apiListAds()">GET /ads/</button>
-            <input type="number" id="api-ad-id" placeholder="Ad ID" style="width:100px"/>
-            <button class="btn btn-ghost btn-sm" onclick="apiGetAd()">GET /ads/{id}</button>
-          </div>
-          <div id="api-ads-result" class="mt-3"></div>
         </div>
 
         <!-- Serve + Interactions -->
@@ -647,10 +643,16 @@ async function loadDash() {
 
 async function loadAnalytics() {
   const tbody=document.getElementById("an-table");
+  const chart=document.getElementById("an-chart");
   tbody.innerHTML=`<tr><td colspan="7"><div class="loading">Loading…</div></td></tr>`;
+  if(chart) chart.innerHTML=`<div class="loading" style="width:100%">Loading...</div>`;
   try {
     const data=await apiFetch("/admin/analytics");
-    if(!data.length){ tbody.innerHTML=`<tr><td colspan="7"><div class="empty">No analytics yet</div></td></tr>`; return; }
+    if(!data.length){
+      tbody.innerHTML=`<tr><td colspan="7"><div class="empty">No analytics yet</div></td></tr>`;
+      if(chart) chart.innerHTML=`<div class="empty" style="width:100%">No analytics yet</div>`;
+      return;
+    }
     tbody.innerHTML=data.map(a=>`<tr>
       <td>${a.ad_id}</td>
       <td style="font-weight:600">${a.title}</td>
@@ -660,14 +662,17 @@ async function loadAnalytics() {
       <td>${ctrBar(a.ctr_percentage)}</td>
     </tr>`).join("");
     const maxCtr=Math.max(...data.map(d=>d.ctr_percentage),1);
-    document.getElementById("an-chart").innerHTML=data.map(a=>{
+    if(chart) chart.innerHTML=data.map(a=>{
       const h=Math.round((a.ctr_percentage/maxCtr)*100);
       const c=a.ctr_percentage===maxCtr?"var(--green)":"var(--accent)";
       return `<div class="bar-col" title="${a.title}: ${a.ctr_percentage}%">
         <div class="bar-fill" style="height:${h}%;background:${c}"></div>
         <div class="bar-label">${a.title}</div></div>`;
     }).join("");
-  } catch(e){ tbody.innerHTML=`<tr><td colspan="7"><div class="empty">Error: ${e.message}</div></td></tr>`; }
+  } catch(e){
+    tbody.innerHTML=`<tr><td colspan="7"><div class="empty">Error: ${e.message}</div></td></tr>`;
+    if(chart) chart.innerHTML=`<div class="empty" style="width:100%">Error: ${e.message}</div>`;
+  }
 }
 
 async function serveAd() {
@@ -962,6 +967,23 @@ async function apiAllAnalytics() {
 checkBackend();
 loadHome();
 setInterval(checkBackend, 30000);
+
+// Splash
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    const s = document.getElementById('splash');
+    s.classList.add('hide');
+    setTimeout(() => s.remove(), 500);
+  }, 1600);
+});
+
+// Disable right-click & common DevTools shortcuts
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('keydown', e => {
+  if (e.key === 'F12') { e.preventDefault(); return; }
+  if (e.ctrlKey && e.shiftKey && ['I','J','C'].includes(e.key)) { e.preventDefault(); return; }
+  if (e.ctrlKey && e.key === 'U') { e.preventDefault(); }
+});
 </script>
 </body>
 </html>

@@ -1,4 +1,26 @@
-fastapi==0.110.0
-uvicorn==0.28.0
-sqlalchemy==2.0.28
-pydantic==2.6.4
+# MABlytic Backend — Python Dependencies
+# Install: pip install -r requirements.txt
+
+# ── Core API framework ────────────────────────────────────────────────
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+
+# ── Database (SQLite via SQLAlchemy) ──────────────────────────────────
+sqlalchemy==2.0.36
+
+# ── Data validation ───────────────────────────────────────────────────
+pydantic==2.9.2
+
+# ── Push notifications (Web Push / VAPID) ────────────────────────────
+pywebpush==2.0.0
+cryptography==43.0.3
+py-vapid==1.9.1
+
+# ── Multipart form support ────────────────────────────────────────────
+python-multipart==0.0.12
+
+# ── CORS (included with FastAPI, listed for clarity) ─────────────────
+# starlette is a FastAPI dependency — no separate install needed
+
+# ── Optional: production ASGI server (instead of uvicorn dev mode) ───
+# gunicorn==23.0.0
