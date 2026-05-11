@@ -5,7 +5,7 @@
    ═══════════════════════════════════════════════════════════════════ */
 
 const CACHE_VERSION = 'mablytic-v3';
-const API_ORIGIN    = 'http://127.0.0.1:8000';
+const API_ORIGIN    = 'https://mablytic.onrender.com';
 
 // Assets to pre-cache on install
 const PRECACHE_URLS = [
