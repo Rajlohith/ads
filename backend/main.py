@@ -1,6 +1,7 @@
 import hashlib
 import re
 from fastapi import FastAPI, Depends, HTTPException
+from fastapi.responses import PlainTextResponse
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from sqlalchemy import desc
@@ -16,7 +17,17 @@ app = FastAPI(
     title="ADWise — Personalized Ad Engine API",
     description="Full-stack PWA backend: auth, ad serving, A/B testing, analytics.",
     version="2.0.0",
+
+    # Disable public docs
+    docs_url=None,
+    redoc_url=None,
+    openapi_url=None
 )
+
+# Block crawlers
+@app.get("/robots.txt", response_class=PlainTextResponse)
+async def robots():
+    return "User-agent: *\nDisallow: /"
 
 origins = [
     "https://mablytic.web.app",
