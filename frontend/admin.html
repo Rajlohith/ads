@@ -43,12 +43,22 @@
 body{background:var(--bg);color:var(--text);display:flex;height:100vh;overflow:hidden;font-size:14px}
 
 /* ── Sidebar ─────────────────────────────────────────────── */
-.sidebar{width:210px;min-width:210px;background:var(--sidebar);
-  border-right:1px solid var(--border);display:flex;flex-direction:column;padding:18px 10px 16px}
+.sidebar{position:fixed;inset:0 auto 0 0;z-index:1000;width:230px;min-width:230px;background:var(--sidebar);
+  border-right:1px solid var(--border);display:flex;flex-direction:column;padding:18px 10px 16px;
+  box-shadow:18px 0 42px rgba(0,0,0,.28);transform:translateX(-100%);transition:transform .22s ease}
+body.sidebar-open .sidebar{transform:translateX(0)}
+.sidebar-backdrop{position:fixed;inset:0;z-index:999;background:rgba(3,7,18,.52);
+  opacity:0;pointer-events:none;transition:opacity .2s ease}
+body.sidebar-open .sidebar-backdrop{opacity:1;pointer-events:auto}
 .logo{display:flex;align-items:center;gap:10px;padding:4px 10px 18px}
 .logo-icon{width:30px;height:30px;border-radius:8px;background:var(--accent);
   display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:#fff}
 .logo-name{font-weight:800;font-size:15px}
+.sidebar-close,.sidebar-toggle{display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--border);
+  background:var(--card);color:var(--text);border-radius:8px;cursor:pointer;transition:all .15s}
+.sidebar-close:hover,.sidebar-toggle:hover{background:var(--accent-soft);border-color:var(--accent);color:var(--text)}
+.sidebar-close{width:30px;height:30px;margin-left:auto;font-size:18px;line-height:1}
+.sidebar-toggle{width:34px;height:34px;font-size:18px;flex-shrink:0}
 .nav{flex:1}
 .nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;
   cursor:pointer;color:var(--muted);font-size:13px;font-weight:500;transition:all .15s;
@@ -67,7 +77,7 @@ body{background:var(--bg);color:var(--text);display:flex;height:100vh;overflow:h
 .user-info small{display:block;font-size:10px;color:var(--muted)}
 
 /* ── Main ─────────────────────────────────────────────────── */
-.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.main{flex:1;width:100%;min-width:0;display:flex;flex-direction:column;overflow:hidden}
 .topbar{background:var(--sidebar);border-bottom:1px solid var(--border);padding:0 24px;height:52px;
   display:flex;align-items:center;gap:10px;flex-shrink:0}
 .topbar-title{font-size:14px;font-weight:700}
@@ -227,12 +237,14 @@ select option{background:#1a1d2e}
 </head>
 <body>
 <div id="splash"><div class="sp-icon">M</div><div class="sp-name">MABlytic</div><div class="sp-sub">Admin Dashboard</div><div class="sp-bar"><div class="sp-fill"></div></div></div>
+<div class="sidebar-backdrop" id="sidebar-backdrop"></div>
 
 <!-- ═══ SIDEBAR ═════════════════════════════════════════════ -->
 <aside class="sidebar">
   <div class="logo">
     <div class="logo-icon">M</div>
     <span class="logo-name">MABlytic</span>
+    <button class="sidebar-close" id="sidebar-close" type="button" aria-label="Close navigation">×</button>
   </div>
   <nav class="nav">
     <button class="nav-item active" data-page="home">
@@ -279,6 +291,7 @@ select option{background:#1a1d2e}
 <!-- ═══ MAIN ═════════════════════════════════════════════════ -->
 <div class="main">
   <div class="topbar">
+    <button class="sidebar-toggle" id="sidebar-toggle" type="button" aria-label="Open navigation" aria-expanded="false">☰</button>
     <span class="topbar-title" id="topbar-title">Persona-Based Ad Testing</span>
     <span class="badge badge-admin">ADMIN</span>
     <div class="spacer"></div>
@@ -535,6 +548,20 @@ function logout() {
 let currentAdId = null, currentServeUid = null;
 let selectedUserId = null, selectedAdId = null;
 
+const sidebarToggle = document.getElementById("sidebar-toggle");
+const sidebarClose = document.getElementById("sidebar-close");
+const sidebarBackdrop = document.getElementById("sidebar-backdrop");
+
+function setSidebar(open) {
+  document.body.classList.toggle("sidebar-open", open);
+  sidebarToggle.setAttribute("aria-expanded", String(open));
+}
+
+sidebarToggle.addEventListener("click",()=>setSidebar(!document.body.classList.contains("sidebar-open")));
+sidebarClose.addEventListener("click",()=>setSidebar(false));
+sidebarBackdrop.addEventListener("click",()=>setSidebar(false));
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") setSidebar(false); });
+
 // ── Toast ─────────────────────────────────────────────────
 function toast(msg, type="ok") {
   const el = document.getElementById("toast");
@@ -558,6 +585,7 @@ function goto(name) {
   document.querySelectorAll(".page").forEach(el=>el.classList.remove("active"));
   document.getElementById(`page-${name}`).classList.add("active");
   document.getElementById("topbar-title").textContent = PAGE_TITLES[name]||name;
+  setSidebar(false);
   if(name==="home")     loadHome();
   if(name==="analysis") loadAnalysis();
   if(name==="users")    loadUsers();
