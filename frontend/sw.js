@@ -1,10 +1,10 @@
 /* ═══════════════════════════════════════════════════════════════════
-   MABlytic Service Worker  —  v3
+   MABlytic Service Worker  —  v4
    Strategy: Network-first for HTML/JS/CSS  |  Cache-first for images
    Push notifications for ad alerts
    ═══════════════════════════════════════════════════════════════════ */
 
-const CACHE_VERSION = 'mablytic-v3';
+const CACHE_VERSION = 'mablytic-v4';
 const API_ORIGIN    = 'https://mablytic.onrender.com';
 
 // Assets to pre-cache on install
