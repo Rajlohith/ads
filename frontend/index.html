@@ -1,36 +1,215 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ad Recommender PWA</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="manifest" href="manifest.json">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>ADWise — Login</title>
+<link rel="manifest" href="manifest.json"/>
+<meta name="theme-color" content="#0d1017"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d1017; --card:#1b1f2e; --border:#272d45;
+  --text:#e4e6f0; --muted:#6070a0; --accent:#5b68ff;
+  --green:#22c55e; --red:#ef4444; --orange:#f97316;
+}
+body{
+  font-family:'Inter',system-ui,sans-serif;
+  background:var(--bg); color:var(--text);
+  min-height:100vh; display:flex;
+  flex-direction:column; align-items:center; justify-content:center;
+  padding:24px;
+}
+/* Stars bg */
+body::before{
+  content:'';position:fixed;inset:0;
+  background:radial-gradient(ellipse at 20% 30%,rgba(91,104,255,.07) 0%,transparent 60%),
+             radial-gradient(ellipse at 80% 70%,rgba(34,197,94,.05) 0%,transparent 60%);
+  pointer-events:none;
+}
+
+.login-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:40px;
+  width:100%; max-width:400px;
+  box-shadow:0 24px 64px rgba(0,0,0,.4);
+  position:relative;
+}
+
+.logo{display:flex;align-items:center;gap:12px;justify-content:center;margin-bottom:28px}
+.logo-icon{
+  width:44px;height:44px;border-radius:12px;
+  background:var(--accent);display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:18px;color:#fff;
+}
+.logo-name{font-size:22px;font-weight:800;letter-spacing:-0.5px}
+
+/* Role tabs */
+.role-tabs{display:grid;grid-template-columns:1fr 1fr;gap:0;
+  border:1px solid var(--border);border-radius:10px;
+  overflow:hidden;margin-bottom:28px;
+}
+.role-tab{
+  padding:10px 0;text-align:center;cursor:pointer;
+  font-size:13px;font-weight:600;color:var(--muted);
+  transition:all .15s;background:transparent;border:none;
+  font-family:inherit;
+}
+.role-tab.active{background:var(--accent);color:#fff;}
+
+/* Form */
+.form-group{margin-bottom:16px}
+label{
+  display:block;font-size:11px;font-weight:700;
+  color:var(--muted);margin-bottom:6px;
+  text-transform:uppercase;letter-spacing:.07em;
+}
+input{
+  width:100%;background:var(--bg);
+  border:1px solid var(--border);border-radius:8px;
+  color:var(--text);font-size:13px;padding:10px 13px;
+  outline:none;transition:border-color .15s;font-family:inherit;
+}
+input:focus{border-color:var(--accent);}
+
+.btn{
+  width:100%;padding:11px;border-radius:8px;border:none;
+  font-size:14px;font-weight:700;cursor:pointer;
+  transition:all .15s;font-family:inherit;margin-top:4px;
+}
+.btn-primary{background:var(--accent);color:#fff;}
+.btn-primary:hover{filter:brightness(1.1);}
+
+.err-msg{
+  background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);
+  border-radius:8px;padding:10px 13px;
+  font-size:12px;color:var(--red);margin-bottom:16px;
+  display:none;
+}
+
+.footer-link{
+  margin-top:22px;text-align:center;
+  font-size:12px;color:var(--muted);
+}
+.footer-link a{color:var(--accent);text-decoration:none;font-weight:600;}
+
+/* Spinner */
+.spinner{display:inline-block;width:14px;height:14px;
+  border:2px solid rgba(255,255,255,.3);
+  border-top-color:#fff;border-radius:50%;
+  animation:spin .6s linear infinite;margin-right:6px;vertical-align:middle;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Admin hint */
+.hint{
+  font-size:11px;color:var(--muted);text-align:center;margin-top:14px;
+  padding:8px;border:1px dashed var(--border);border-radius:6px;
+}
+</style>
 </head>
 <body>
-    <header>
-        <h1>My PWA App</h1>
-        <p>Logged in as: User #1 (Tech, Gaming)</p>
-    </header>
 
-    <main>
-        <section class="content-feed">
-            <p>Welcome to your feed! Here is an article...</p>
-            <br>
-            
-            <!-- This is where the personalized ad will be injected -->
-            <div id="ad-container" class="ad-card hidden">
-                <span class="ad-badge">Sponsored</span>
-                <h3 id="ad-title">Loading Ad...</h3>
-                <p id="ad-content"></p>
-                <button id="ad-action-btn">Learn More</button>
-            </div>
+<div class="login-card">
+  <div class="logo">
+    <div class="logo-icon">AW</div>
+    <span class="logo-name">ADWise</span>
+  </div>
 
-            <br>
-            <button id="refresh-ad-btn" class="secondary-btn">↻ Load New Ad</button>
-        </section>
-    </main>
+  <!-- Role tabs -->
+  <div class="role-tabs">
+    <button class="role-tab active" id="tab-user"  onclick="setRole('user')">👤 User</button>
+    <button class="role-tab"        id="tab-admin" onclick="setRole('admin')">🛡 Admin</button>
+  </div>
 
-    <script src="app.js"></script>
+  <!-- Error -->
+  <div class="err-msg" id="err"></div>
+
+  <!-- Form -->
+  <div class="form-group">
+    <label>Username</label>
+    <input type="text" id="username" placeholder="Enter username" autocomplete="username"/>
+  </div>
+  <div class="form-group">
+    <label>Password</label>
+    <input type="password" id="password" placeholder="Enter password" autocomplete="current-password"
+           onkeydown="if(event.key==='Enter')doLogin()"/>
+  </div>
+
+  <button class="btn btn-primary" id="login-btn" onclick="doLogin()">Login</button>
+
+  <div class="hint" id="admin-hint" style="display:none">
+    Admin credentials: username <strong>admin</strong> / password <strong>Admin123</strong>
+  </div>
+
+  <div class="footer-link">
+    Don't have an account? <a href="register.html">Register here</a>
+  </div>
+</div>
+
+<script>
+const API = "http://127.0.0.1:8000";
+let selectedRole = "user";
+
+// Already logged in? Redirect.
+const session = JSON.parse(localStorage.getItem("adwise_session") || "null");
+if (session) {
+  window.location.href = session.is_admin ? "admin.html" : "feed.html";
+}
+
+function setRole(role) {
+  selectedRole = role;
+  document.getElementById("tab-user").classList.toggle("active",  role === "user");
+  document.getElementById("tab-admin").classList.toggle("active", role === "admin");
+  document.getElementById("admin-hint").style.display = role === "admin" ? "block" : "none";
+  document.getElementById("err").style.display = "none";
+}
+
+function showErr(msg) {
+  const el = document.getElementById("err");
+  el.textContent = msg;
+  el.style.display = "block";
+}
+
+async function doLogin() {
+  const username = document.getElementById("username").value.trim();
+  const password = document.getElementById("password").value;
+  if (!username || !password) { showErr("Please enter both username and password."); return; }
+
+  const btn = document.getElementById("login-btn");
+  btn.innerHTML = '<span class="spinner"></span>Logging in…';
+  btn.disabled = true;
+  document.getElementById("err").style.display = "none";
+
+  try {
+    const r = await fetch(`${API}/auth/login`, {
+      method:  "POST",
+      headers: { "Content-Type": "application/json" },
+      body:    JSON.stringify({ username, password }),
+    });
+    if (!r.ok) {
+      const d = await r.json();
+      throw new Error(d.detail || "Login failed.");
+    }
+    const user = await r.json();
+
+    // Role mismatch check
+    if (selectedRole === "admin" && !user.is_admin) {
+      throw new Error("This account does not have admin privileges.");
+    }
+    if (selectedRole === "user" && user.is_admin) {
+      throw new Error("Please use the Admin tab to log in as admin.");
+    }
+
+    localStorage.setItem("adwise_session", JSON.stringify(user));
+    window.location.href = user.is_admin ? "admin.html" : "feed.html";
+  } catch (e) {
+    showErr(e.message);
+    btn.innerHTML = "Login";
+    btn.disabled = false;
+  }
+}
+</script>
 </body>
 </html>
